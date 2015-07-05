@@ -62,7 +62,6 @@ def main():
     args = parser.parse_args()
 
     files = glob.glob(args.data_dir)
-    print(files)
     for i, fname in enumerate(files):
         df = ingest(fname, args.route_id, (args.begin_lat, args.begin_lon), (args.end_lat, args.end_lon))
         times = transit_times(df)
