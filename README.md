@@ -6,6 +6,8 @@ To start, this project will try to answer:
 
 - Is the 801 faster than the 1? If so, where?
 
+https://github.com/open-austin/project-ideas/issues/3
+
 ### Usage
 
 `distance.py` transforms a day of vehicle locations into trips with travel time, given a route id and the coordinates for two stops along the route.
@@ -44,6 +46,23 @@ python distance.py \
     --end_lat 30.189427 \
     --end_lon -97.767879 \
     "../CapMetrics/data/vehicle_positions/*.csv" > data/1_techridge_bluff.csv
+```
+
+```
+python distance.py \
+    --route_id 1 \
+    --begin_lat 30.162883 \
+    --begin_lon -97.790317 \
+    --end_lat 30.266218 \
+    --end_lon -97.746056 \
+    "../CapMetrics/data/vehicle_positions/*.csv" > data/1_triangle_republic.csv
+python distance.py \
+    --route_id 801 \
+    --begin_lat 30.162883 \
+    --begin_lon -97.790317 \
+    --end_lat 30.266218 \
+    --end_lon -97.746056 \
+    "../CapMetrics/data/vehicle_positions/*.csv" > data/801_triangle_republic.csv
 ```
 
 ### Installation
