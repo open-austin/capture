@@ -10,14 +10,28 @@ To start, this project will try to answer:
 
 `distance.py` transforms a day of vehicle locations into trips with travel time, given a route id and the coordinates for two stops along the route.
 
+To get the travel times for the 801 between Triangle Station and Republic Square Park Station on June 3, 2015:
+
 ```sh
 python distance.py \
-    --route 801 \
+    --route_id 801 \
     --begin_lat 30.162883 \
     --begin_lon -97.790317 \
     --end_lat 30.266218 \
     --end_lon -97.746056 \
-    ../CapMetrics/data/vehicle_positions/2015-07-03.csv
+    ../CapMetrics/data/vehicle_positions/2015-07-03.csv > data/2015-07-03-801_triangle_republic.csv
+```
+
+To get the travel times for the 801 between Triangle Station and Republic Square Park Station for **all days**:
+
+```sh
+python distance.py \
+    --route_id 801 \
+    --begin_lat 30.418199 \
+    --begin_lon -97.668243 \
+    --end_lat 30.162883 \
+    --end_lon -97.790317 \
+    "../CapMetrics/data/vehicle_positions/*.csv" > data/801_techridge_southpark.csv
 ```
 
 ### Installation

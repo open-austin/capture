@@ -3,15 +3,17 @@
 
 from __future__ import division, print_function
 
+import glob
+
 import numpy as np
 import pandas as pd
 from geopy.distance import vincenty as point_distance
 
 
-def ingest(fn, begin_latlng, end_latlng):
+def ingest(fn, route_id, begin_latlng, end_latlng):
     df = pd.read_csv(fn, parse_dates=['timestamp'])
     df = df.drop(['dist_traveled', 'speed', 'trip_headsign'], axis=1)
-    df = df[df.route_id == 801]
+    df = df[df.route_id == route_id]
     df['begin_distances'] = compute_distance(df, begin_latlng)
     df['end_distances'] = compute_distance(df, end_latlng)
     return df
@@ -40,7 +42,7 @@ def transit_times(df):
     begin_mins.drop(unneeded_cols, axis=1, inplace=True)
     end_mins.drop(['vehicle_id', 'route_id'] + unneeded_cols, axis=1, inplace=True)
 
-    result = begin_mins.join(end_mins, rsuffix='_tri', lsuffix='_end')
+    result = begin_mins.join(end_mins, rsuffix='_begin', lsuffix='_end')
 
     duration = begin_mins.timestamp - end_mins.timestamp
     result['duration'] = duration / np.timedelta64(1, 's')
@@ -51,18 +53,20 @@ def transit_times(df):
 def main():
     import argparse
     parser = argparse.ArgumentParser(description=main.__doc__)
-    parser.add_argument('day_file', help='CSV containing day data')
-    parser.add_argument('--route', help='Route ID', required=True, type=int)
+    parser.add_argument('data_dir', help='Path to CSV locations')
+    parser.add_argument('--route_id', help='Route ID', required=True, type=int)
     parser.add_argument('--begin_lat', help='Latitude of first stop', required=True, type=float)
     parser.add_argument('--begin_lon', help='Longitude of first stop', required=True, type=float)
     parser.add_argument('--end_lat', help='Latitude of second stop', required=True, type=float)
     parser.add_argument('--end_lon', help='Longitude of second stop', required=True, type=float)
     args = parser.parse_args()
 
-    df = ingest(args.day_file, (args.begin_lat, args.begin_lon), (args.end_lat, args.end_lon))
-
-    times = transit_times(df)
-    print(times.to_csv())
+    files = glob.glob(args.data_dir)
+    print(files)
+    for i, fname in enumerate(files):
+        df = ingest(fname, args.route_id, (args.begin_lat, args.begin_lon), (args.end_lat, args.end_lon))
+        times = transit_times(df)
+        print(times.to_csv(header=(i == 0)))
 
 if __name__ == '__main__':
     main()
