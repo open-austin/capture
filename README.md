@@ -22,7 +22,7 @@ python distance.py \
     ../CapMetrics/data/vehicle_positions/2015-07-03.csv > data/2015-07-03-801_triangle_republic.csv
 ```
 
-To get the travel times for the 801 between Triangle Station and Republic Square Park Station for **all days**:
+To get the travel times for the 801 between Tech Ridge Bay I and Southpark Meadows Station for **all days**:
 
 ```sh
 python distance.py \
@@ -32,6 +32,18 @@ python distance.py \
     --end_lat 30.162883 \
     --end_lon -97.790317 \
     "../CapMetrics/data/vehicle_positions/*.csv" > data/801_techridge_southpark.csv
+```
+
+To get the travel times for the 1 between Tech Ridge Bay D and Bluff Springs/William Cannon for **all days**:
+
+```sh
+python distance.py \
+    --route_id 1 \
+    --begin_lat 30.418534 \
+    --begin_lon -97.668904 \
+    --end_lat 30.189427 \
+    --end_lon -97.767879 \
+    "../CapMetrics/data/vehicle_positions/*.csv" > data/1_techridge_bluff.csv
 ```
 
 ### Installation
