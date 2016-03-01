@@ -8,7 +8,16 @@ To start, this project will try to answer:
 
 https://github.com/open-austin/project-ideas/issues/3
 
+### Installation
+
+1. Clone the capture repository https://github.com/open-austin/capture
+2. Clone the CapMetrics repository https://github.com/scascketta/CapMetrics
+3. Install the requirements via `pip install -r requirements.txt`
+4. Run one of the examples in the Usage section.
+
 ### Usage
+
+`$CAPMETRICS_PATH` is the path to the CapMetrics repository.
 
 `distance.py` transforms a day of vehicle locations into trips with travel time, given a route id and the coordinates for two stops along the route.
 
