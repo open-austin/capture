@@ -8,7 +8,16 @@ To start, this project will try to answer:
 
 https://github.com/open-austin/project-ideas/issues/3
 
+### Installation
+
+1. Clone the capture repository https://github.com/open-austin/capture
+2. Clone the CapMetrics repository https://github.com/scascketta/CapMetrics
+3. Install the requirements via `pip install -r requirements.txt`
+4. Run one of the examples in the Usage section.
+
 ### Usage
+
+`$CAPMETRICS_PATH` is the path to the CapMetrics repository.
 
 `distance.py` transforms a day of vehicle locations into trips with travel time, given a route id and the coordinates for two stops along the route.
 
@@ -21,7 +30,7 @@ python distance.py \
     --begin_lon -97.790317 \
     --end_lat 30.266218 \
     --end_lon -97.746056 \
-    ../CapMetrics/data/vehicle_positions/2015-07-03.csv > data/2015-07-03-801_triangle_republic.csv
+    $CAPMETRICS_PATH/data/vehicle_positions/2015-07-03.csv > data/2015-07-03-801_triangle_republic.csv
 ```
 
 To get the travel times for the 801 between Tech Ridge Bay I and Southpark Meadows Station for **all days**:
@@ -33,7 +42,7 @@ python distance.py \
     --begin_lon -97.668243 \
     --end_lat 30.162883 \
     --end_lon -97.790317 \
-    "../CapMetrics/data/vehicle_positions/*.csv" > data/801_techridge_southpark.csv
+    "$CAPMETRICS_PATH/data/vehicle_positions/*.csv" > data/801_techridge_southpark.csv
 ```
 
 To get the travel times for the 1 between Tech Ridge Bay D and Bluff Springs/William Cannon for **all days**:
@@ -45,7 +54,7 @@ python distance.py \
     --begin_lon -97.668904 \
     --end_lat 30.189427 \
     --end_lon -97.767879 \
-    "../CapMetrics/data/vehicle_positions/*.csv" > data/1_techridge_bluff.csv
+    "$CAPMETRICS_PATH/data/vehicle_positions/*.csv" > data/1_techridge_bluff.csv
 ```
 
 ```
@@ -55,14 +64,14 @@ python distance.py \
     --begin_lon -97.790317 \
     --end_lat 30.266218 \
     --end_lon -97.746056 \
-    "../CapMetrics/data/vehicle_positions/*.csv" > data/1_triangle_republic.csv
+    "$CAPMETRICS_PATH/data/vehicle_positions/*.csv" > data/1_triangle_republic.csv
 python distance.py \
     --route_id 801 \
     --begin_lat 30.162883 \
     --begin_lon -97.790317 \
     --end_lat 30.266218 \
     --end_lon -97.746056 \
-    "../CapMetrics/data/vehicle_positions/*.csv" > data/801_triangle_republic.csv
+    "$CAPMETRICS_PATH/data/vehicle_positions/*.csv" > data/801_triangle_republic.csv
 ```
 
 ### Installation
