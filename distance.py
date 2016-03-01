@@ -3,7 +3,9 @@
 
 from __future__ import division, print_function
 
+import argparse
 import glob
+import os
 
 import numpy as np
 import pandas as pd
@@ -12,7 +14,7 @@ from geopy.distance import vincenty as point_distance
 
 def ingest(fn, route_id, begin_latlng, end_latlng):
     df = pd.read_csv(fn, parse_dates=['timestamp'])
-    df = df.drop(['dist_traveled', 'speed', 'trip_headsign'], axis=1)
+    df = df.drop(['speed', 'trip_headsign'], axis=1)
     df = df[df.route_id == route_id]
     df['begin_distances'] = compute_distance(df, begin_latlng)
     df['end_distances'] = compute_distance(df, end_latlng)
@@ -21,11 +23,11 @@ def ingest(fn, route_id, begin_latlng, end_latlng):
 
 def compute_distance(df, latlng):
     df = df.copy()
-    starts = zip(df.lat, df.lon)
+    starts = zip(df.latitude, df.longitude)
     return [point_distance(latlng, s).meters for s in starts]
 
 
-def transit_times(df):
+def parse_duration(df):
     '''
     for each trip id
         choose a reading nearest the begin stop
@@ -38,7 +40,7 @@ def transit_times(df):
     begin_mins = df.loc[mins.begin_distances].set_index('trip_id')
     end_mins = df.loc[mins.end_distances].set_index('trip_id')
 
-    unneeded_cols = ['begin_distances', 'end_distances', 'lat', 'lon']
+    unneeded_cols = ['begin_distances', 'end_distances', 'latitude', 'longitude']
     begin_mins.drop(unneeded_cols, axis=1, inplace=True)
     end_mins.drop(['vehicle_id', 'route_id'] + unneeded_cols, axis=1, inplace=True)
 
@@ -50,22 +52,49 @@ def transit_times(df):
     return result
 
 
+def parse_duration_by_hour(df):
+    df['duration_abs'] = df['duration'].abs()
+    df['hour'] = df['timestamp_begin'].apply(
+        lambda x: x.tz_localize('UTC').tz_convert('US/Central').hour
+    )
+    df_byhour = df.groupby('hour')
+
+    results = pd.concat([
+        df_byhour['duration_abs'].count(),
+        df_byhour['duration_abs'].mean()
+    ], axis=1, keys=['count', 'mean'])
+
+    return results
+
+
 def main():
-    import argparse
     parser = argparse.ArgumentParser(description=main.__doc__)
-    parser.add_argument('data_dir', help='Path to CSV locations')
+    parser.add_argument('--capmetrics_path', help='Path to the capmetrics directory', required=True, type=str)
+    parser.add_argument('--glob', help='Glob of vehicle positions CSV files', required=True, type=str)
     parser.add_argument('--route_id', help='Route ID', required=True, type=int)
     parser.add_argument('--begin_lat', help='Latitude of first stop', required=True, type=float)
     parser.add_argument('--begin_lon', help='Longitude of first stop', required=True, type=float)
     parser.add_argument('--end_lat', help='Latitude of second stop', required=True, type=float)
     parser.add_argument('--end_lon', help='Longitude of second stop', required=True, type=float)
+    parser.add_argument('--name', help='Name of the output file', required=True, type=str)
     args = parser.parse_args()
 
-    files = glob.glob(args.data_dir)
+    df_total = pd.DataFrame()
+
+    data_glob = os.path.join(args.capmetrics_path, 'data', 'vehicle_positions', args.glob)
+    files = glob.glob(data_glob)
     for i, fname in enumerate(files):
-        df = ingest(fname, args.route_id, (args.begin_lat, args.begin_lon), (args.end_lat, args.end_lon))
-        times = transit_times(df)
-        print(times.to_csv(header=(i == 0)))
+        print('({}/{}) Ingesting {}'.format(i + 1, len(files), fname))
+        df_ingested = ingest(fname, args.route_id, (args.begin_lat, args.begin_lon), (args.end_lat, args.end_lon))
+        df_total = pd.concat([df_total, df_ingested])
+
+    df_duration = parse_duration(df_total)
+    df_duration_by_hour = parse_duration_by_hour(df_duration)
+
+    output_filename = '{route_id}_{name}_{glob}'.format(route_id=args.route_id, glob=args.glob, name=args.name)
+    output_path_duration_by_hour = 'results/duration_by_hour/{}.csv'.format(output_filename)
+    df_duration_by_hour.to_csv(output_path_duration_by_hour, header=True)
+    print('Saved duration by hour to {}'.format(output_path_duration_by_hour))
 
 if __name__ == '__main__':
     main()
