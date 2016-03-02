@@ -24,19 +24,38 @@ https://github.com/open-austin/project-ideas/issues/3
 To get the travel times for the 801 between Triangle Station and Republic Square Park Station on June 3, 2015:
 
 ```sh
-python distance.py --route_id 801 --begin_lat 30.162883 --begin_lon -97.790317 --end_lat 30.266218 --end_lon -97.746056 --name triangle-to-republic --glob "2016*" --capmetrics_path ../CapMetrics
+python distance.py --route_id 801 --name triangle-to-republic --begin_lat 30.162883 --begin_lon -97.790317 --end_lat 30.266218 --end_lon -97.746056  --glob "2015-06-03" --capmetrics_path ../CapMetrics
 ```
 
 To get the travel times for the 801 between Tech Ridge Bay I and Southpark Meadows Station for **all days in 2016**:
 
-```sh
-python distance.py --route_id 801 --begin_lat 30.418199 --begin_lon -97.668243 --end_lat 30.162883 --end_lon -97.790317 --name techridge-to-southpark --glob "2016*" --capmetrics_path ../CapMetrics
+```py
+python distance.py --route_id 801 --name techridge-to-southpark --begin_lat 30.418199 --begin_lon -97.668243 --end_lat 30.162883 --end_lon -97.790317  --glob "2016*" --capmetrics_path ../CapMetrics
 ```
 
 To get the travel times for the 1 between Tech Ridge Bay D and Bluff Springs/William Cannon for **all days in 2016**:
 
-```sh
-python distance.py --route_id 801 --begin_lat 30.418534 --begin_lon -97.668904 --end_lat 30.189427 --end_lon -97.767879 --name techridge-to-cannon --glob "2016*" --capmetrics_path ../CapMetrics
+```py
+python distance.py --route_id 1 --name techridge-to-cannon --begin_lat 30.418534 --begin_lon -97.668904 --end_lat 30.189427 --end_lon -97.767879  --glob "2016*" --capmetrics_path ../CapMetrics
+```
+
+#####  Data for the visualizations:
+
+###### 801 vs 1
+
+```py
+# end to end
+python distance.py --route_id 1 --name techridge-to-cannon --begin_lat 30.418534 --begin_lon -97.668904 --end_lat 30.189427 --end_lon -97.767879  --glob "2016*" --capmetrics_path ../CapMetrics
+python distance.py --route_id 801 --name techridge-to-southpark --begin_lat 30.418199 --begin_lon -97.668243 --end_lat 30.162883 --end_lon -97.790317  --glob "2016*" --capmetrics_path ../CapMetrics
+# triangle to republic square
+python distance.py --route_id 801 --begin_lat 30.162883 --begin_lon -97.790317 --end_lat 30.266218 --end_lon -97.746056 --name triangle-to-republic --glob "2016*" --capmetrics_path ../CapMetrics
+python distance.py --route_id 1 --begin_lat 30.162883 --begin_lon -97.790317 --end_lat 30.266218 --end_lon -97.746056 --name triangle-to-republic --glob "2016*" --capmetrics_path ../CapMetrics
+```
+
+###### 803 vs 3
+
+```py
+...
 ```
 
 ### Installation
