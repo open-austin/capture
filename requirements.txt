@@ -1,2 +1,5 @@
 geopy==1.10.0
 pandas==0.16.2
+
+jupyter==1.0.0
+plotly==1.9.6

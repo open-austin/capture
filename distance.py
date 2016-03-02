@@ -64,36 +64,57 @@ def parse_duration_by_hour(df):
         df_byhour['duration_abs'].mean()
     ], axis=1, keys=['count', 'mean'])
 
-    return results
+    return results.reindex(index=range(0, 24))
+
+
+def parse(capmetrics_path=None, leglob=None, route_id=None, begin_lat=None, begin_lon=None, end_lat=None, end_lon=None, name=None):
+    df_total = pd.DataFrame()
+
+    data_glob = os.path.join(capmetrics_path, 'data', 'vehicle_positions', leglob)
+    files = glob.glob(data_glob)
+    for i, fname in enumerate(files):
+        print('({}/{}) Ingesting {}'.format(i + 1, len(files), fname))
+        try:
+            df_ingested = ingest(fname, route_id, (begin_lat, begin_lon), (end_lat, end_lon))
+            df_duration = parse_duration(df_ingested)
+            df_total = pd.concat([df_total, df_duration])
+        except Exception as e:
+            print(e)
+            print('Skipping ', fname)
+
+    if df_total.empty:
+        print('No vehicle positions found')
+        return
+
+    return parse_duration_by_hour(df_duration)
 
 
 def main():
     parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('--capmetrics_path', help='Path to the capmetrics directory', required=True, type=str)
     parser.add_argument('--glob', help='Glob of vehicle positions CSV files', required=True, type=str)
+    parser.add_argument('--name', help='Name of the output file', required=True, type=str)
     parser.add_argument('--route_id', help='Route ID', required=True, type=int)
     parser.add_argument('--begin_lat', help='Latitude of first stop', required=True, type=float)
     parser.add_argument('--begin_lon', help='Longitude of first stop', required=True, type=float)
     parser.add_argument('--end_lat', help='Latitude of second stop', required=True, type=float)
     parser.add_argument('--end_lon', help='Longitude of second stop', required=True, type=float)
-    parser.add_argument('--name', help='Name of the output file', required=True, type=str)
     args = parser.parse_args()
 
-    df_total = pd.DataFrame()
-
-    data_glob = os.path.join(args.capmetrics_path, 'data', 'vehicle_positions', args.glob)
-    files = glob.glob(data_glob)
-    for i, fname in enumerate(files):
-        print('({}/{}) Ingesting {}'.format(i + 1, len(files), fname))
-        df_ingested = ingest(fname, args.route_id, (args.begin_lat, args.begin_lon), (args.end_lat, args.end_lon))
-        df_total = pd.concat([df_total, df_ingested])
-
-    df_duration = parse_duration(df_total)
-    df_duration_by_hour = parse_duration_by_hour(df_duration)
+    results = parse(
+        capmetrics_path=args.capmetrics_path,
+        name=args.name,
+        leglob=args.glob,
+        route_id=args.route_id,
+        begin_lat=args.begin_lat,
+        begin_lon=args.begin_lon,
+        end_lat=args.end_lat,
+        end_lon=args.end_lon
+    )
 
     output_filename = '{route_id}_{name}_{glob}'.format(route_id=args.route_id, glob=args.glob, name=args.name)
     output_path_duration_by_hour = 'results/duration_by_hour/{}.csv'.format(output_filename)
-    df_duration_by_hour.to_csv(output_path_duration_by_hour, header=True)
+    results.to_csv(output_path_duration_by_hour, header=True, sep='\t')
     print('Saved duration by hour to {}'.format(output_path_duration_by_hour))
 
 if __name__ == '__main__':
