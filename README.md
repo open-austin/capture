@@ -29,13 +29,13 @@ python distance.py --route_id 801 --name triangle-to-republic --begin_lat 30.162
 
 To get the travel times for the 801 between Tech Ridge Bay I and Southpark Meadows Station for **all days in 2016**:
 
-```py
+```sh
 python distance.py --route_id 801 --name techridge-to-southpark --begin_lat 30.418199 --begin_lon -97.668243 --end_lat 30.162883 --end_lon -97.790317  --glob "2016*" --capmetrics_path ../CapMetrics
 ```
 
 To get the travel times for the 1 between Tech Ridge Bay D and Bluff Springs/William Cannon for **all days in 2016**:
 
-```py
+```sh
 python distance.py --route_id 1 --name techridge-to-cannon --begin_lat 30.418534 --begin_lon -97.668904 --end_lat 30.189427 --end_lon -97.767879  --glob "2016*" --capmetrics_path ../CapMetrics
 ```
 
@@ -43,7 +43,7 @@ python distance.py --route_id 1 --name techridge-to-cannon --begin_lat 30.418534
 
 ###### 801 vs 1
 
-```py
+```sh
 # end to end
 python distance.py --route_id 1 --name techridge-to-cannon --begin_lat 30.418534 --begin_lon -97.668904 --end_lat 30.189427 --end_lon -97.767879  --glob "2016*" --capmetrics_path ../CapMetrics
 python distance.py --route_id 801 --name techridge-to-southpark --begin_lat 30.418199 --begin_lon -97.668243 --end_lat 30.162883 --end_lon -97.790317  --glob "2016*" --capmetrics_path ../CapMetrics
@@ -54,7 +54,7 @@ python distance.py --route_id 1 --begin_lat 30.162883 --begin_lon -97.790317 --e
 
 ###### 803 vs 3
 
-```py
+```sh
 ...
 ```
 
