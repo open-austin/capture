@@ -55,7 +55,11 @@ python distance.py --route_id 1 --begin_lat 30.162883 --begin_lon -97.790317 --e
 ###### 803 vs 3
 
 ```sh
-...
+# end to end
+
+# northloop to republic square
+python distance.py --route_id 803 --begin_lat 30.326284 --begin_lon -97.739566 --end_lat 30.266218 --end_lon -97.746056 --name triangle-to-republic --glob "2016*" --capmetrics_path ../CapMetrics
+python distance.py --route_id 3 --begin_lat 30.326284 --begin_lon -97.739566 --end_lat 30.266218 --end_lon -97.746056 --name triangle-to-republic --glob "2016*" --capmetrics_path ../CapMetrics
 ```
 
 ### Installation
